@@ -11,4 +11,3 @@ bundle install
 # Add binstubs to PATH in ~/.zshenv like this:
 #   export PATH=".git/safe/../../bin:$PATH"
 mkdir -p .git/safe
-mkdir -p tmp/pids
