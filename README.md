@@ -15,6 +15,10 @@ Then run:
 
 This will create a Rails app in `projectname` using the latest version of Rails.
 
+After run, configure sidekiq panel password in the
+`config/initializers/sidekiq.rb` file. The panel is accessible by the URL
+`/sidekiq`.
+
 ## License
 
 Suspenders is Copyright © 2008-2015 thoughtbot.
