@@ -106,13 +106,14 @@ module Kratos
       build :copy_dotfiles
       build :configure_default_url_options
       build :configure_action_mailer
+      build :configure_routes
       build :configure_redis
       build :configure_sidekiq
-      build :configure_routes
       build :configure_time_formats
       build :configure_i18n_messages
       build :configure_whenever
       build :configure_app_services
+      build :configure_rubocop
       build :setup_brazilian_app
       build :setup_dalli_store
       build :disable_xml_params

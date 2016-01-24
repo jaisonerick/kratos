@@ -14,5 +14,5 @@ module AcceptanceHelpers
 end
 
 RSpec.configure do |config|
-  config.include Acceptance::JsonHelpers, type: :acceptance
+  config.include AcceptanceHelpers, type: :acceptance
 end

@@ -37,25 +37,12 @@ class AppBuilder < Rails::AppBuilder
   end
 
   def add_bullet_gem_configuration
-    config = <<-RUBY
-config.after_initialize do
-  Bullet.enable = true
-  Bullet.bullet_logger = true
-  Bullet.rails_logger = true
-end
-
-    RUBY
-
-    inject_into_file(
-      'config/environments/development.rb',
-      config,
-      after: "config.action_mailer.raise_delivery_errors = true\n"
-    )
+    copy_file 'bullet.rb', 'config/initializers/bullet.rb'
   end
 
   def raise_on_unpermitted_parameters
     config = <<-RUBY
-  config.action_controller.action_on_unpermitted_parameters = :raise
+    config.action_controller.action_on_unpermitted_parameters = :raise
     RUBY
 
     inject_into_class 'config/application.rb', 'Application', config
@@ -73,15 +60,15 @@ end
   def configure_generators
     config = <<-RUBY
 
-  config.generators do |generate|
-    generate.helper false
-    generate.javascript_engine false
-    generate.request_specs false
-    generate.routing_specs false
-    generate.stylesheets false
-    generate.test_framework :rspec
-    generate.view_specs false
-  end
+    config.generators do |generate|
+      generate.helper false
+      generate.javascript_engine false
+      generate.request_specs false
+      generate.routing_specs false
+      generate.stylesheets false
+      generate.test_framework :rspec
+      generate.view_specs false
+    end
 
     RUBY
 
@@ -95,7 +82,7 @@ end
 
   def configure_quiet_assets
     config = <<-RUBY
-  config.quiet_assets = true
+    config.quiet_assets = true
     RUBY
 
     inject_into_class 'config/application.rb', 'Application', config
@@ -173,8 +160,8 @@ end
 
     config = <<-RUBY
 
-config.action_mailer.delivery_method = :smtp
-config.action_mailer.smtp_settings = SMTP_SETTINGS
+  config.action_mailer.delivery_method = :smtp
+  config.action_mailer.smtp_settings = SMTP_SETTINGS
     RUBY
 
     inject_into_file 'config/environments/production.rb', config,
@@ -184,8 +171,8 @@ config.action_mailer.smtp_settings = SMTP_SETTINGS
   def enable_rack_deflater
     config = <<-RUBY
 
-# Enable deflate / gzip compression of controller-generated responses
-config.middleware.use Rack::Deflater
+  # Enable deflate / gzip compression of controller-generated responses
+  config.middleware.use Rack::Deflater
     RUBY
 
     inject_into_file(
@@ -227,12 +214,12 @@ config.middleware.use Rack::Deflater
     staging_file = 'config/environments/staging.rb'
     copy_file 'staging.rb', staging_file
 
-    config = <<-RUBY
+    config = <<~RUBY
 
-Rails.application.configure do
-# ...
-end
-    RUBY
+                  Rails.application.configure do
+                    # ...
+                  end
+                RUBY
 
     append_file staging_file, config
   end
@@ -267,6 +254,11 @@ end
     action_mailer_host 'production', %{ENV.fetch("APPLICATION_HOST")}
   end
 
+  def configure_routes
+    remove_file 'config/routes.rb'
+    copy_file 'routes.rb', 'config/routes.rb'
+  end
+
   def configure_redis
     copy_file 'redis.rb', 'config/initializers/redis.rb'
   end
@@ -276,17 +268,15 @@ end
     copy_file 'sidekiq_rspec.yml', 'spec/support/sidekiq.rb'
     copy_file 'sidekiq_security.rb', 'config/initializers/sidekiq.rb'
     empty_directory 'tmp/pids'
-  end
 
-  def configure_routes
-    replace_in_file 'config/routes.rb',
-                    /Rails\.application\.routes\.draw do.*end/m,
-                    <<-EOS
-Rails.application.routes.draw do
-require 'sidekiq/web'
-mount Sidekiq::Web => '/sidekiq'
-end
-EOS
+    route = <<-HERE
+  require 'sidekiq/web'
+  mount Sidekiq::Web => '/sidekiq'
+    HERE
+
+    inject_into_file('config/routes.rb',
+                     route,
+                     after: "Rails.application.routes.draw do\n")
   end
 
   def configure_time_formats
@@ -315,10 +305,16 @@ EOS
     inject_into_class 'config/application.rb', 'Application', config
   end
 
+  def configure_rubocop
+    copy_file 'rubocop.yml', '.rubocop.yml'
+    copy_file 'rubocop_database.yml', 'db/migrate/.rubocop.yml'
+    copy_file 'rubocop_rspec.yml', 'spec/.rubocop.yml'
+  end
+
   def setup_brazilian_app
     config = <<-RUBY
-  config.time_zone = 'Brasilia'
-  config.i18n.default_locale = :'pt-BR'
+    config.time_zone = 'Brasilia'
+    config.i18n.default_locale = :'pt-BR'
     RUBY
 
     inject_into_class 'config/application.rb', 'Application', config
@@ -337,7 +333,7 @@ EOS
 
   def fix_i18n_deprecation_warning
     config = <<-RUBY
-  config.i18n.enforce_available_locales = false
+    config.i18n.enforce_available_locales = false
     RUBY
 
     inject_into_class 'config/application.rb', 'Application', config
@@ -350,10 +346,10 @@ task(:default).clear
 task default: [:spec]
 
 if defined? RSpec
-task(:spec).clear
-RSpec::Core::RakeTask.new(:spec) do |t|
-  t.verbose = false
-end
+  task(:spec).clear
+  RSpec::Core::RakeTask.new(:spec) do |t|
+    t.verbose = false
+  end
 end
       EOS
     end

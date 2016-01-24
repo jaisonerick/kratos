@@ -13,10 +13,9 @@ module Kratos
       config = "config.action_mailer.default_url_options = { host: #{host} }"
       configure_environment(rails_env, config)
 
-      inject_into_file(
+      append_file(
         "config/environments/#{rails_env}.rb",
-        "\nRails.application.routes.default_url_options = { host: #{host} }",
-        after: "\nend"
+        "\n\nRails.application.routes.default_url_options = { host: #{host} }"
       )
     end
 

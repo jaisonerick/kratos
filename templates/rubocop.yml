@@ -1,40 +1,25 @@
 AllCops:
+  TargetRubyVersion: 2.3
+  Include:
+    - Rakefile
+    - config.ru
   Exclude:
-    - "Gemfile"
-    - "db/**/*"
-    - "vendor/**/*"
-    - "tmp/**/*"
-    - "config/**/*"
-    - "bin/**/*"
-    - "log/**/*"
-    - "Guardfile"
-    - "spec/factories/*"
-  RunRailsCops: true
+    - db/schema.rb
 
-Metrics/MethodLength:
-  Enabled: false
-
-Metrics/ClassLength:
-  Enabled: false
-
-Metrics/AbcSize:
-  Enabled: false
-
-Metrics/CyclomaticComplexity:
-  Max: 10
-
-Metrics/PerceivedComplexity:
-  Max: 10
-
-Style/PredicateName:
-  Description: Check the names of predicate methods.
-  StyleGuide: https://github.com/bbatsov/ruby-style-guide#bool-methods-qmark
+Rails:
   Enabled: true
-  NamePrefix:
-  - is_
-  - has_
-  - have_
-  NamePrefixBlacklist:
-  - is_
-  Exclude:
-  - spec/**/*
+
+MethodLength:
+  Max: 20
+
+LineLength:
+  Max: 120
+
+HasAndBelongsToMany:
+  Enabled: false
+
+Documentation:
+  Enabled: false
+
+StringLiterals:
+  Enabled: false
