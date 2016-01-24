@@ -15,7 +15,8 @@ module Kratos
 
       inject_into_file(
         "config/environments/#{rails_env}.rb",
-        "\nRails.application.routes.default_url_options = { host: #{host} }"
+        "\nRails.application.routes.default_url_options = { host: #{host} }",
+        after: "\nend"
       )
     end
 

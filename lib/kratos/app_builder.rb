@@ -162,7 +162,7 @@ end
 
   def configure_i18n_tasks
     copy_file 'i18n_rspec.rb', 'spec/i18n_spec.rb'
-    copy_file 'i18n-tasks.rb', 'config/i18n-tasks.rb'
+    copy_file 'i18n-tasks.yml', 'config/i18n-tasks.yml'
   end
 
   def configure_smtp
@@ -304,12 +304,12 @@ EOS
     copy_file 'schedule.rb', 'config/schedule.rb'
   end
 
-  def configure_services
+  def configure_app_services
     empty_directory 'app/services'
 
     config = <<-RUBY
 
-  config.autoload_paths += ['#{config.root}/app/services']
+  config.autoload_paths += ['#\{config.root}/app/services']
     RUBY
 
     inject_into_class 'config/application.rb', 'Application', config

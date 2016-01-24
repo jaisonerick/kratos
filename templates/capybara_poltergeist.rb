@@ -15,7 +15,3 @@ end
 Capybara.javascript_driver = :poltergeist
 Capybara.default_wait_time = 15
 Capybara.automatic_reload = true
-
-Capybara.app_host = 'http://127.0.0.1:4000'
-Capybara.server_host = '127.0.0.1'
-Capybara.server_port = '4000'

@@ -7,22 +7,23 @@ with the necessary dependencies to run and test this app:
 
     % ./bin/setup
 
-It assumes you have a machine equipped with Ruby, Postgres, etc. If not, set up
-your machine with [this script].
+It assumes you have a machine equipped with Ruby, Postgres, etc.
 
-[this script]: https://github.com/thoughtbot/laptop
+## Deploy
 
-After setting up, you can run the application using [Heroku Local]:
+Provision your server using ansible. You must have a figaro settings file at
+`~/.<app-name>.yml`. The foreman rake task will copy this file to the root
+directory of your application. After provisioning, run:
 
-    % heroku local
+    % cap production deploy
+    % cap production deploy:restart
 
-[Heroku Local]: https://devcenter.heroku.com/articles/heroku-local
+If you have multiple servers configured in production, the restart will be with
+one server at a time, avoiding offline time.
 
-## Guidelines
+## Puma configuration
 
-Use the following guides for getting things done, programming well, and
-programming in style.
+The figaro settings is not loaded before puma, so you must setup puma variables
+using the `.env` file. These environment variables are: `WEB_CONCURRENCY` and
+`MAX_THREADS`.
 
-* [Protocol](http://github.com/thoughtbot/guides/blob/master/protocol)
-* [Best Practices](http://github.com/thoughtbot/guides/blob/master/best-practices)
-* [Style](http://github.com/thoughtbot/guides/blob/master/style)

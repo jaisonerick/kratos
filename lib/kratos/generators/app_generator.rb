@@ -112,7 +112,7 @@ module Kratos
       build :configure_time_formats
       build :configure_i18n_messages
       build :configure_whenever
-      build :configure_services
+      build :configure_app_services
       build :setup_brazilian_app
       build :setup_dalli_store
       build :disable_xml_params

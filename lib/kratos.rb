@@ -1,5 +1,4 @@
 require 'kratos/version'
 require 'kratos/generators/app_generator'
 require 'kratos/actions'
-require 'kratos/adapters/heroku'
 require 'kratos/app_builder'
