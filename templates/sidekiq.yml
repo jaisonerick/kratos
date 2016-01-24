@@ -1,0 +1,4 @@
+:concurrency: <%= ENV.fetch("MAX_THREADS", 5) %>
+:pidfile: tmp/pids/sidekiq.pid
+:queues:
+  - default

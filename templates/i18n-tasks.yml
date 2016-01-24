@@ -1,0 +1,22 @@
+locales:
+  - en
+  - pt-BR
+data:
+  read:
+    - config/locales/%{locale}.*.yml
+  write:
+    - config/locales/%{locale}.auto.yml
+
+search:
+  paths:
+    - "app/controllers"
+    - "app/models"
+    - "app/views"
+    - "spec"
+ignore_unused:
+  - activerecord.*
+  - date.*
+  - datetime.*
+  - number.*
+  - time.*
+  - titles.*

@@ -1,0 +1,9 @@
+machine:
+  environment:
+    COVERAGE: true
+database:
+  override:
+    - bin/setup
+test:
+  override:
+    - bin/rake
