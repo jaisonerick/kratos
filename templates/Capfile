@@ -1,3 +1,7 @@
+require 'dotenv'
+
+Dotenv.load
+
 # Load DSL and set up stages
 require 'capistrano/setup'
 
@@ -7,6 +11,10 @@ require 'capistrano/rbenv'
 require 'capistrano/bundler'
 require 'capistrano/rails/migrations'
 require 'capistrano/rails/assets'
+require 'capistrano/rails/console'
+require 'capistrano/nginx'
+require 'new_relic/recipes'
+require 'rollbar/capistrano3'
 
 # Setup Whenever tasks
 require 'whenever/capistrano'

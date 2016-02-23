@@ -10,10 +10,6 @@ set -e
 gem install bundler --conservative
 bundle check || bundle install
 
-if [ ! -f config/application.yml ]; then
-  cp .sample.application.yml config/application.yml
-fi
-
 # Set up database and add any development seed data
 bin/rake dev:prime
 

@@ -1,28 +1,40 @@
 namespace :deploy do
-  task :setup_env do
-    on roles(:web) do
-      within release_path do
-        execute(:cp, "~/.#{fetch(:application)}.yml config/application.yml")
-        execute(:cp, "~/.#{fetch(:application)}.env .env")
-        execute(:cp, "~/.#{fetch(:application)}.foreman .foreman")
-      end
-    end
-  end
-  before :updated, :setup_env
-
   task :restart do
     invoke 'foreman:export'
     invoke 'foreman:restart'
+    invoke 'deploy:setup_nginx'
   end
 
-  desc 'reload the database with seed data'
-  task :seed do
-    on primary :db do
-      within current_path do
-        with rails_env: fetch(:stage) do
-          execute(:rake, 'db:seed')
-        end
-      end
+  task :setup_nginx do
+    invoke 'nginx:site:add'
+    invoke 'nginx:site:enable'
+    invoke 'nginx:reload'
+  end
+
+  task :setup_env do
+    env_file = "env_#{fetch(:stage)}.gpg"
+
+    dotenv_contents = ''
+    run_locally do
+      fail "You must have a #{env_file} file on your project root " \
+           'to be able to deploy it' unless File.exist?(env_file)
+
+      dotenv_contents = `bundle exec dotgpg cat #{env_file}`
+    end
+
+    on roles(:app) do
+      dotenv = StringIO.new
+      dotenv << dotenv_contents
+      dotenv.rewind
+
+      upload! dotenv, File.join(shared_path, '.env')
     end
   end
+  after :started, :setup_env
+
+  namespace :check do
+    task linked_files: '.env'
+  end
 end
+
+remote_file '.env' => 'deploy:setup_env', roles: :app

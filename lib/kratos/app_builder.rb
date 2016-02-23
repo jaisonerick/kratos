@@ -152,6 +152,18 @@ class AppBuilder < Rails::AppBuilder
     copy_file 'i18n-tasks.yml', 'config/i18n-tasks.yml'
   end
 
+  def configure_newrelic
+    template 'newrelic.yml.erb', 'config/newrelic.yml'
+  end
+
+  def configure_rollbar
+    template 'rollbar.rb.erb', 'config/initializers/rollbar.rb'
+  end
+
+  def configure_nginx
+    copy_file 'nginx.conf.erb', 'config/deploy/nginx.conf.erb'
+  end
+
   def configure_smtp
     copy_file 'smtp.rb', 'config/smtp.rb'
 
@@ -413,6 +425,11 @@ end
               force: true
   end
 
+  def use_mysql_config_template
+    template 'mysql_database.yml.erb', 'config/database.yml',
+              force: true
+  end
+
   def create_database
     bundle_command 'exec rake db:create db:migrate'
   end
@@ -428,9 +445,6 @@ end
 
   def create_capistrano_config
     template 'deploy_config.rb.erb', 'config/deploy.rb'
-  end
-
-  def create_capistrano_config
     copy_file 'cap_environment.rb', 'config/deploy/production.rb'
     copy_file 'cap_environment.rb', 'config/deploy/staging.rb'
   end

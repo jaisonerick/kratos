@@ -3,9 +3,6 @@ namespace :foreman do
   task :export do
     on roles(:app) do
       within current_path do
-        # Add path to .env.
-        # Needed for rbenv to work properly.
-        execute(:echo, "\"PATH=#{fetch(:rbenv_bin_path)}:$PATH\" >> .env")
         # Create the upstart script
         execute(:sudo, "#{fetch(:rbenv_prefix)} " \
                 'foreman export upstart /etc/init ' \

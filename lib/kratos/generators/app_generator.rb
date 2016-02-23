@@ -3,7 +3,7 @@ require 'rails/generators/rails/app/app_generator'
 
 module Kratos
   class AppGenerator < Rails::Generators::AppGenerator
-    class_option :database, type: :string, aliases: '-d', default: 'postgresql',
+    class_option :database, type: :string, aliases: '-d', default: 'mysql',
                             desc: "Configure for selected database (options: #{DATABASES.join('/')})"
 
     class_option :skip_test_unit, type: :boolean, aliases: '-T', default: true,
@@ -77,6 +77,9 @@ module Kratos
 
     def setup_production_environment
       say 'Setting up the production environment'
+      build :configure_newrelic
+      build :configure_rollbar
+      build :configure_nginx
       build :configure_smtp
       build :enable_rack_deflater
       build :setup_asset_host
@@ -142,6 +145,7 @@ module Kratos
       say 'Setting up database'
 
       build :use_postgres_config_template if 'postgresql' == options[:database]
+      build :use_mysql_config_template if 'mysql' == options[:database]
 
       build :create_database
     end
