@@ -6,6 +6,12 @@ AllCops:
   Exclude:
     - db/schema.rb
 
+FrozenStringLiteralComment:
+  Enabled: false
+
+SignalException:
+  EnforcedStyle: semantic
+
 Rails:
   Enabled: true
 
